@@ -1,13 +1,5 @@
 from tkinter import *
-import mysql.connector
 from tkinter import messagebox
-import sys
-import os
-
-mydb = mysql.connector.connect(user='lifechoices', password='@Lifechoices1234', host='localhost',
-                               database='lifechoicesonline')
-
-mycursor = mydb.cursor()
 
 root = Tk()
 root.title("Life Choices User Login")
@@ -63,10 +55,6 @@ def failed():
 
 def login():
     user = life_entry.get()
-    password = user_password.get()
-    sql = 'Select * from Users where Username = %s and Password = %s'
-    mycursor.execute(sql, [user, password])
-    results = mycursor.fetchall()
 
     if results:
         sql = 'UPDATE Users SET Login_time = NOW() WHERE Username = %s'
@@ -304,11 +292,6 @@ def register():
                 add_user_button = Button(root, text="Add User", width=20, command=add_User)
                 add_user_button.place(x=100, y=500)
 
-                def delete_user():
-                    mydb = mysql.connector.connect(user='lifechoices', password='@Lifechoices1234', host='localhost',
-                                                   database='lifechoicesonline')
-                    mycursor = mydb.cursor()
-
                     win = Tk()
                     win.title("DELETE")
                     win.geometry("200x200")
@@ -334,8 +317,6 @@ def register():
                     def deleting():
                         fullname1 = full_name.get()
                         sql = "DELETE from Users where Fullname = %s"
-                        mycursor.execute(sql, (fullname1,))
-                        mydb.commit()
                         messagebox.showinfo("DELETED", "Delete was a success")
                         win.destroy()
 
