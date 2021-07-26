@@ -39,7 +39,6 @@ def logged():
     def sign():
         try:
             messagebox.showinfo("Welcome.", "Login Successful, Access Granted." + entry1.get())
-
             root1.destroy()
         except ValueError:
             messagebox.showerror("ValueError", "Enter Digits only." + entry1.get())
@@ -47,65 +46,61 @@ def logged():
     sign_button = Button(root1, text="Sign In", width=10, command=sign)
     sign_button.place(x=0, y=100)
 
+    def fail():
+        messagebox.showerror("Error.", "Unable To Proceed.")
+        entry1.delete(0, END)
+        user_password.delete(0, END)
 
-def fail():
-    messagebox.showerror("Error.", "Unable To Proceed.")
-    entry1.delete(0, END)
-    user_password.delete(0, END)
+        def log():
+            user = entry1.get()
 
+            if results:
+                sql = 'UPDATE Users SET Login_time = NOW() WHERE Username = %s'
+                mycursor.execute(sql, [user])
+                mydb.commit()
 
-def log():
-    user = entry1.get()
+                if mycursor.rowcount > 0:
+                    pass
 
-    if results:
-        sql = 'UPDATE Users SET Login_time = NOW() WHERE Username = %s'
-        mycursor.execute(sql, [user])
-        mydb.commit()
+                    for _ in results:
+                        logged()
+                        break
+                    else:
+                        fail()
 
-        if mycursor.rowcount > 0:
-            pass
+                        login_button = Button(root, text="Login", width=20, command=log)
+                        login_button.place(x=50, y=350)
 
-        for _ in results:
-            logged()
-            break
-        else:
-            fail()
+                        def out():
+                            username = entry1.get()
+                            userpass = user_password.get()
+                            sql = 'Select * from Users where Username = %s and Password = %s'
+                            mycursor.execute(sql, [username, userpass])
+                            results = mycursor.fetchone()
 
+                            if results:
+                                sql = 'UPDATE Users SET Logout_time = NOW() WHERE Username = %s'
+                                mycursor.execute(sql, [username])
+                                mydb.commit()
 
-login_button = Button(root, text="Login", width=20, command=log)
-login_button.place(x=50, y=350)
+                                if mycursor.rowcount > 0:
+                                    pass
 
+                                    for _ in results:
+                                        messagebox.showinfo("Farewell.", "Log Out Successful.")
+                                        break
+                                    else:
+                                        entry1.delete(0, END)
+                                        user_password.delete(0, END)
 
-def out():
-    username = entry1.get()
-    userpass = user_password.get()
-    sql = 'Select * from Users where Username = %s and Password = %s'
-    mycursor.execute(sql, [username, userpass])
-    results = mycursor.fetchone()
-
-    if results:
-        sql = 'UPDATE Users SET Logout_time = NOW() WHERE Username = %s'
-        mycursor.execute(sql, [username])
-        mydb.commit()
-
-        if mycursor.rowcount > 0:
-            pass
-
-        for _ in results:
-            messagebox.showinfo("Farewell.", "Log Out Successful.")
-            break
-        else:
-            entry1.delete(0, END)
-            user_password.delete(0, END)
-
-
-out_button = Button(root, text="Sign Out", width=20, command=out)
-out_button.place(x=440, y=400)
+                                        out_button = Button(root, text="Sign Out", width=20, command=out)
+                                        out_button.place(x=440, y=400)
 
 
 def register():
     root.destroy()
     messagebox.showinfo("Unauthorised Access.", "Login Through The Administration Portal.")
+
     root2 = Tk()
     root2.title("Admin Sign-in")
     root2.geometry("500x500")
@@ -173,35 +168,33 @@ def login(admin_entry=root, admin_entry2=root, root2=None):
                             admin_entry.delete(0, END)
                             admin_entry2.delete(0, END)
 
-                logout_button = Button(root, text="Exit", width=20, command=logout)
-                logout_button.place(x=700, y=500)
+                            user_id_list = Label(root, text="User Id")
+                            user_id_list.place(x=50, y=100)
+                            listBox = Listbox(root, width=20)
+                            listBox.place(x=50, y=150)
 
-                user_id_list = Label(root, text="User Id")
-                user_id_list.place(x=50, y=100)
-                listBox = Listbox(root, width=20)
-                listBox.place(x=50, y=150)
+                            username_list = Label(root, text="Username")
+                            username_list.place(x=250, y=100)
+                            listBox3 = Listbox(root, width=20)
+                            listBox3.place(x=250, y=150)
 
-                username_list = Label(root, text="Username")
-                username_list.place(x=250, y=100)
-                listBox3 = Listbox(root, width=20)
-                listBox3.place(x=250, y=150)
+                            password_list = Label(root, text="Password")
+                            password_list.place(x=450, y=100)
+                            listBox4 = Listbox(root, width=20)
+                            listBox4.place(x=450, y=150)
 
-                password_list = Label(root, text="Password")
-                password_list.place(x=450, y=100)
-                listBox4 = Listbox(root, width=20)
-                listBox4.place(x=450, y=150)
+                            login_list = Label(root, text="Login")
+                            login_list.place(x=650, y=100)
+                            listBox5 = Listbox(root, width=20)
+                            listBox5.place(x=650, y=150)
 
-                login_list = Label(root, text="Login")
-                login_list.place(x=650, y=100)
-                listBox5 = Listbox(root, width=20)
-                listBox5.place(x=650, y=150)
-
-                logout_list = Label(root, text="Logout")
-                logout_list.place(x=850, y=100)
-                listbox6 = Listbox(root, width=20)
-                listbox6.place(x=850, y=150)
+                            logout_list = Label(root, text="Logout")
+                            logout_list.place(x=850, y=100)
+                            listbox6 = Listbox(root, width=20)
+                            listbox6.place(x=850, y=150)
 
                 def populatebox():
+                    global time, name, pass1, time2, add
                     mydb = mysql.connector.connect(user='lifechoices', password='@Lifechoices1234', host='localhost',
                                                    database='lifechoicesonline')
                     mycursor = mydb.cursor()
@@ -209,76 +202,69 @@ def login(admin_entry=root, admin_entry2=root, root2=None):
                     mycursor.execute(sql)
                     for i in mycursor:
                         listBox.insert("end", i)
-
-                    mycursor.execute("SELECT Username FROM Users")
-                    name = mycursor.fetchone()
+                        mycursor.execute("SELECT Username FROM Users")
+                        name = mycursor.fetchone()
 
                     for i in name:
                         listBox3.insert(END, i)
-
-                    mycursor.execute("SELECT Password FROM Users")
-                    pass1 = mycursor.fetchall()
+                        mycursor.execute("SELECT Password FROM Users")
+                        pass1 = mycursor.fetchone()
 
                     for i in pass1:
                         listBox4.insert(END, i)
-
-                    mycursor.execute("SELECT Login_time FROM Users")
-                    time = mycursor.fetchall()
+                        mycursor.execute("SELECT Login_time FROM Users")
+                        time = mycursor.fetchone()
 
                     for i in time:
                         listBox5.insert(END, i)
-
-                    mycursor.execute("SELECT Logout_time FROM Users")
-                    time2 = mycursor.fetchall()
+                        mycursor.execute("SELECT Logout_time FROM Users")
+                        time2 = mycursor.fetchall()
 
                     for i in time2:
                         listbox6.insert(END, i)
 
-                update_button = Button(root, text="Update list", command=lambda: populatebox())
-                update_button.place(x=450, y=400)
+                        update_button = Button(root, text="Update list", command=lambda: populatebox())
+                        update_button.place(x=450, y=400)
 
                 def add():
                     root4 = Tk()
                     root4.title("Add User")
                     root4.geometry("500x500")
 
-                    full_name_label = Label(root3, text="Full Name:")
-                    user_name_label = Label(root3, text="Username:")
-                    password_label = Label(root3, text="Password:")
-                    fullname = Entry(root3)
-                    username = Entry(root3)
-                    password = Entry(root3)
+                full_name_label = Label(root3, text="Full Name:")
+                user_name_label = Label(root3, text="Username:")
+                password_label = Label(root3, text="Password:")
+                fullname = Entry(root3)
+                username = Entry(root3)
+                password = Entry(root3)
 
-                    def create():
+                def create():
+                    mydb = mysql.connector.connect(user='lifechoices', password='@Lifechoices1234',
+                                                   host='localhost', database='lifechoicesonline')
+                    mycursor = mydb.cursor()
+                    x = fullname.get()
+                    y = username.get()
+                    z = password.get()
+
+                    if x == '' or y == '' or z == '':
+                        messagebox.showerror("Retry.", "Do not leave any fields empty.")
+                        root3.destroy()
+                        create()
+
+                    else:
                         mydb = mysql.connector.connect(user='lifechoices', password='@Lifechoices1234',
                                                        host='localhost', database='lifechoicesonline')
-
-                        mycursor = mydb.cursor()
-
-                        x = fullname.get()
-                        y = username.get()
-                        z = password.get()
-
-                        if x == '' or y == '' or z == '':
-                            messagebox.showerror("Retry.", "Do not leave any fields empty.")
-                            root3.destroy()
-                            create()
-                        else:
-                            mydb = mysql.connector.connect(user='lifechoices', password='@Lifechoices1234',
-                                                           host='localhost', database='lifechoicesonline')
-
-                            try:
-                                mycursor = mydb.cursor()
-                                sql = "INSERT INTO Users(Fullname, Username, Password) VALUES(%s, %s, %s)"
-                                mycursor.execute(sql, [x, y, z])
-                                mydb.commit()
-                            except:
-                                messagebox.showerror("Unsuccessful.", "Error connecting to the database.")
+                        try:
+                            mycursor = mydb.cursor()
+                            sql = "INSERT INTO Users(Fullname, Username, Password) VALUES(%s, %s, %s)"
+                            mycursor.execute(sql, [x, y, z])
+                            mydb.commit()
+                        except:
+                            messagebox.showerror("Unsuccessful.", "Error connecting to the database.")
                             messagebox.showinfo("Success" + x + " has been entered into the server")
                             root3.destroy()
 
                     create_button = Button(root3, text="Add User", command=create)
-
                     full_name_label.place(x=5, y=5)
                     user_name_label.place(x=5, y=45)
                     password_label.place(x=5, y=85)
@@ -287,51 +273,53 @@ def login(admin_entry=root, admin_entry2=root, root2=None):
                     password.place(x=5, y=105)
                     create_button.place(x=25, y=130)
 
-                add_user_button = Button(root, text="Add User", width=20, command=add)
-                add_user_button.place(x=100, y=500)
+                    add_user_button = Button(root, text="Add User", width=20, command=add)
+                    add_user_button.place(x=100, y=500)
 
-            root5 = Tk()
-            root5.title("Next Of Kin")
-            root5.geometry("500x500")
-            root5.config(bg="black")
 
-            kin_name = Entry(root5)
-            kin_name.config(width=15, font="Serif, 20", bg="purple")
-            kin_name.place(x=150, y=245)
+root5 = Tk()
+root5.title("Next Of Kin")
+root5.geometry("500x500")
+root5.config(bg="black")
 
-            kin_contact = Entry(root5)
-            kin_contact.place(x=450, y=245)
+kin_name = Entry(root5)
+kin_name.config(width=15, font="Serif, 20", bg="purple")
+kin_name.place(x=150, y=245)
+kin_contact = Entry(root5)
+kin_contact.config(width=15, font="Serif, 20", bg="purple")
+kin_contact.place(x=450, y=245)
 
-            root6 = Tk()
-            root6.title("Remove")
-            root6.geometry("200x200")
+root6 = Tk()
+root6.title("Remove")
+root6.geometry("200x200")
 
-            name = Label(root5, text="Full Name:")
-            name.place(x=0, y=0)
+name = Label(root5, text="Full Name:")
+name.place(x=0, y=0)
 
-            full_name = Entry(root5)
-            full_name.place(x=0, y=20)
+full_name = Entry(root5)
+full_name.place(x=0, y=20)
 
-            name_user = Label(root5, text="Username:")
-            name_user.place(x=0, y=40)
+name_user = Label(root5, text="Username:")
+name_user.place(x=0, y=40)
 
-            user_name = Entry(root5)
-            user_name.place(x=0, y=60)
+user_name = Entry(root5)
+user_name.place(x=0, y=60)
 
-            password_label = Label(root5, text="Password:")
-            password_label.place(x=0, y=80)
+password_label = Label(root5, text="Password:")
+password_label.place(x=0, y=80)
 
-            password = Entry(root5)
-            password.place(x=0, y=100)
+password = Entry(root5)
+password.place(x=0, y=100)
 
-            def delete():
-                sql = "DELETE from Users where Fullname = %s"
-                messagebox.showinfo("DELETED", "Delete was a success")
-                root6.destroy()
 
-            delete_button = Button(root, text="Delete User", width=20, command=delete)
-            delete_button.place(x=400, y=500)
+def delete():
+    sql = "DELETE from Users where Fullname = %s"
+    messagebox.showinfo("DELETED", "Delete was a success")
+    root6.destroy()
 
+
+delete_button = Button(root, text="Delete User", width=20, command=delete)
+delete_button.place(x=400, y=500)
 
 admin_button = Button(root, text="Login", width=20, command=login)
 admin_button.place(x=0, y=250)
