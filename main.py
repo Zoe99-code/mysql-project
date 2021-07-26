@@ -1,4 +1,5 @@
 from tkinter import *
+import mysql.connector
 from tkinter import messagebox
 
 root = Tk()
@@ -9,21 +10,21 @@ root.config(bg="black")
 label_logo = Label(root, text="Life Choices", width=70, font=("Serif", 20), bg="purple")
 label_logo.place(x=0, y=0)
 
-life_label = Label(root, text="Username: ")
-life_label.place(x=500, y=100)
+label1 = Label(root, text="Username: ")
+label1.place(x=500, y=100)
 
-life_entry = Entry(root, width=40)
-life_entry.place(x=400, y=150)
+entry1 = Entry(root, width=40)
+entry1.place(x=400, y=150)
 
-life_pass = Label(root, text="Password: ")
-life_pass.place(x=500, y=200)
+password1 = Label(root, text="Password: ")
+password1.place(x=500, y=200)
 
 user_password = Entry(root, width=40, show="*")
 user_password.place(x=400, y=250)
 
 
 def logged():
-    messagebox.showinfo("Welcome", "Login Granted." + life_entry.get())
+    messagebox.showinfo("Welcome", "Login Granted." + entry1.get())
     root1 = Tk()
     root1.title("Contact Details")
     root1.geometry("500x500")
@@ -37,24 +38,24 @@ def logged():
 
     def sign():
         try:
-            messagebox.showinfo("Welcome.", "Login Successful, Access Granted." + life_entry.get())
+            messagebox.showinfo("Welcome.", "Login Successful, Access Granted." + entry1.get())
 
             root1.destroy()
         except ValueError:
-            messagebox.showerror("ValueError", "Enter Digits only." + life_entry.get())
+            messagebox.showerror("ValueError", "Enter Digits only." + entry1.get())
 
     sign_button = Button(root1, text="Sign In", width=10, command=sign)
     sign_button.place(x=0, y=100)
 
 
-def failed():
+def fail():
     messagebox.showerror("Error.", "Unable To Proceed.")
-    life_entry.delete(0, END)
+    entry1.delete(0, END)
     user_password.delete(0, END)
 
 
-def login():
-    user = life_entry.get()
+def log():
+    user = entry1.get()
 
     if results:
         sql = 'UPDATE Users SET Login_time = NOW() WHERE Username = %s'
@@ -68,19 +69,19 @@ def login():
             logged()
             break
         else:
-            failed()
+            fail()
 
 
-login_button = Button(root, text="Login", width=20, command=login)
+login_button = Button(root, text="Login", width=20, command=log)
 login_button.place(x=50, y=350)
 
 
 def out():
-    username = life_entry.get()
+    username = entry1.get()
     userpass = user_password.get()
     sql = 'Select * from Users where Username = %s and Password = %s'
     mycursor.execute(sql, [username, userpass])
-    results = mycursor.fetchall()
+    results = mycursor.fetchone()
 
     if results:
         sql = 'UPDATE Users SET Logout_time = NOW() WHERE Username = %s'
@@ -94,7 +95,7 @@ def out():
             messagebox.showinfo("Farewell.", "Log Out Successful.")
             break
         else:
-            life_entry.delete(0, END)
+            entry1.delete(0, END)
             user_password.delete(0, END)
 
 
@@ -105,55 +106,55 @@ out_button.place(x=440, y=400)
 def register():
     root.destroy()
     messagebox.showinfo("Unauthorised Access.", "Login Through The Administration Portal.")
-    window = Tk()
-    window.title("Admin Sign-in")
-    window.geometry("500x500")
-    window.config(bg="black")
+    root2 = Tk()
+    root2.title("Admin Sign-in")
+    root2.geometry("500x500")
+    root2.config(bg="black")
 
-    admin_username = Label(window, text="Username: ")
+    admin_username = Label(root2, text="Username: ")
     admin_username.place(x=0, y=0)
 
-    admin_entry = Entry(window, width=20)
+    admin_entry = Entry(root2, width=20)
     admin_entry.place(x=0, y=30)
 
-    admin_password = Label(window, text="Password: ")
+    admin_password = Label(root2, text="Password: ")
     admin_password.place(x=0, y=80)
 
-    admin_entry2 = Entry(window, width=20, show="*")
+    admin_entry2 = Entry(root2, width=20, show="*")
     admin_entry2.place(x=0, y=110)
 
-    def admin_login():
 
-        username = admin_entry.get()
-        userpass = admin_entry2.get()
-        sql = 'Select * from Admin where Username = %s and Password = %s'
-        mycursor.execute(sql, [username, userpass])
-        results = mycursor.fetchall()
+def login(admin_entry=root, admin_entry2=root, root2=None):
+    username = admin_entry.get()
+    userpass = admin_entry2.get()
+    sql = 'Select * from Admin where Username = %s and Password = %s'
+    mycursor.execute(sql, [username, userpass])
+    results = mycursor.fetchone()
 
-        if results:
-            sql = 'UPDATE Admin SET Login_time = NOW() WHERE Username = %s'
-            mycursor.execute(sql, [username])
-            mydb.commit()
+    if results:
+        sql = 'UPDATE Admin SET Login_time = NOW() WHERE Username = %s'
+        mycursor.execute(sql, [username])
+        mydb.commit()
 
-            if mycursor.rowcount > 0:
-                pass
+        if mycursor.rowcount > 0:
+            pass
 
             for _ in results:
                 messagebox.showinfo("Authorised Access Granted.", "Welcome To The Administration Portal.")
-                window.destroy()
+                root2.destroy()
 
-                admin = Tk()
-                admin.title("Life Choices Administration Portal")
-                admin.geometry("700x700")
-                admin.config(bg="black")
+                root3 = Tk()
+                root3.title("Life Choices Administration Portal")
+                root3.geometry("700x700")
+                root3.config(bg="black")
 
-                label_logo2 = Label(window, text="Life Choices", width=70, font=("Serif", 20), bg="purple")
+                label_logo2 = Label(root2, text="Life Choices", width=70, font=("Serif", 20), bg="purple")
                 label_logo2.place(x=0, y=0)
 
                 def logout():
                     sql = 'Select * from Admin where Username = %s and Password = %s'
                     mycursor.execute(sql, [username, userpass])
-                    results = mycursor.fetchall()
+                    results = mycursor.fetchone()
 
                     if results:
                         sql = 'UPDATE Admin SET Logout_time = NOW() WHERE Username = %s'
@@ -166,8 +167,6 @@ def register():
                         for i in results:
                             messagebox.showinfo("Farewell.", "Exiting The Portal.")
                             root.destroy()
-                            python = sys.executable
-                            os.execl(python, python, *sys.argv)
 
                             break
                         else:
@@ -212,7 +211,7 @@ def register():
                         listBox.insert("end", i)
 
                     mycursor.execute("SELECT Username FROM Users")
-                    name = mycursor.fetchall()
+                    name = mycursor.fetchone()
 
                     for i in name:
                         listBox3.insert(END, i)
@@ -238,18 +237,17 @@ def register():
                 update_button = Button(root, text="Update list", command=lambda: populatebox())
                 update_button.place(x=450, y=400)
 
-                def add_User():
-                    add = Tk()
-                    add.title("Add User")
-                    add.geometry("500x500")
+                def add():
+                    root4 = Tk()
+                    root4.title("Add User")
+                    root4.geometry("500x500")
 
-                    head_label = Label(add)
-                    full_name_label = Label(add, text="Full Name:")
-                    user_name_label = Label(add, text="Username:")
-                    password_label = Label(add, text="Password:")
-                    full_name = Entry(add)
-                    user_name = Entry(add)
-                    password = Entry(add)
+                    full_name_label = Label(root3, text="Full Name:")
+                    user_name_label = Label(root3, text="Username:")
+                    password_label = Label(root3, text="Password:")
+                    fullname = Entry(root3)
+                    username = Entry(root3)
+                    password = Entry(root3)
 
                     def create():
                         mydb = mysql.connector.connect(user='lifechoices', password='@Lifechoices1234',
@@ -257,13 +255,13 @@ def register():
 
                         mycursor = mydb.cursor()
 
-                        x = full_name.get()
-                        y = user_name.get()
+                        x = fullname.get()
+                        y = username.get()
                         z = password.get()
 
                         if x == '' or y == '' or z == '':
-                            messagebox.showerror("TRY AGAIN", "Please do not leave the fields empty")
-                            add.destroy()
+                            messagebox.showerror("Retry.", "Do not leave any fields empty.")
+                            root3.destroy()
                             create()
                         else:
                             mydb = mysql.connector.connect(user='lifechoices', password='@Lifechoices1234',
@@ -272,63 +270,71 @@ def register():
                             try:
                                 mycursor = mydb.cursor()
                                 sql = "INSERT INTO Users(Fullname, Username, Password) VALUES(%s, %s, %s)"
-                                mycursor.execute(sql, [(x), (y), (z)])
+                                mycursor.execute(sql, [x, y, z])
                                 mydb.commit()
                             except:
-                                messagebox.showerror("OOPS", "Error connecting to databases")
-                            messagebox.showinfo("SUCCESS " + x + " has been added to the server")
-                            add.destroy()
+                                messagebox.showerror("Unsuccessful.", "Error connecting to the database.")
+                            messagebox.showinfo("Success" + x + " has been entered into the server")
+                            root3.destroy()
 
-                    create_button = Button(add, text="Add User", command=create)
+                    create_button = Button(root3, text="Add User", command=create)
 
                     full_name_label.place(x=5, y=5)
                     user_name_label.place(x=5, y=45)
                     password_label.place(x=5, y=85)
-                    full_name.place(x=5, y=25)
-                    user_name.place(x=5, y=65)
+                    fullname.place(x=5, y=25)
+                    username.place(x=5, y=65)
                     password.place(x=5, y=105)
                     create_button.place(x=25, y=130)
 
-                add_user_button = Button(root, text="Add User", width=20, command=add_User)
+                add_user_button = Button(root, text="Add User", width=20, command=add)
                 add_user_button.place(x=100, y=500)
 
-                    win = Tk()
-                    win.title("DELETE")
-                    win.geometry("200x200")
+            root5 = Tk()
+            root5.title("Next Of Kin")
+            root5.geometry("500x500")
+            root5.config(bg="black")
 
-                    name = Label(win, text="Full Name:")
-                    name.place(x=0, y=0)
+            kin_name = Entry(root5)
+            kin_name.config(width=15, font="Serif, 20", bg="purple")
+            kin_name.place(x=150, y=245)
 
-                    full_name = Entry(win)
-                    full_name.place(x=0, y=20)
+            kin_contact = Entry(root5)
+            kin_contact.place(x=450, y=245)
 
-                    name_user = Label(win, text="Username:")
-                    name_user.place(x=0, y=40)
+            root6 = Tk()
+            root6.title("Remove")
+            root6.geometry("200x200")
 
-                    user_name = Entry(win)
-                    user_name.place(x=0, y=60)
+            name = Label(root5, text="Full Name:")
+            name.place(x=0, y=0)
 
-                    password_label = Label(win, text="Password:")
-                    password_label.place(x=0, y=80)
+            full_name = Entry(root5)
+            full_name.place(x=0, y=20)
 
-                    password = Entry(win)
-                    password.place(x=0, y=100)
+            name_user = Label(root5, text="Username:")
+            name_user.place(x=0, y=40)
 
-                    def deleting():
-                        fullname1 = full_name.get()
-                        sql = "DELETE from Users where Fullname = %s"
-                        messagebox.showinfo("DELETED", "Delete was a success")
-                        win.destroy()
+            user_name = Entry(root5)
+            user_name.place(x=0, y=60)
 
-                    btn_delete = Button(win, text="Delete", width=20, command=deleting)
-                    btn_delete.place(x=0, y=150)
+            password_label = Label(root5, text="Password:")
+            password_label.place(x=0, y=80)
 
-                delete_user_button = Button(root, text="Delete User", width=20, command=delete_user)
-                delete_user_button.place(x=400, y=500)
+            password = Entry(root5)
+            password.place(x=0, y=100)
 
-    admin_button = Button(window, text="Login", width=20, command=admin_login)
-    admin_button.place(x=0, y=250)
+            def delete():
+                sql = "DELETE from Users where Fullname = %s"
+                messagebox.showinfo("DELETED", "Delete was a success")
+                root6.destroy()
 
+            delete_button = Button(root, text="Delete User", width=20, command=delete)
+            delete_button.place(x=400, y=500)
+
+
+admin_button = Button(root, text="Login", width=20, command=login)
+admin_button.place(x=0, y=250)
 
 register_button = Button(root, text="Register Here", width=20, command=register)
 register_button.place(x=800, y=350)
