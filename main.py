@@ -201,27 +201,27 @@ def entry(admin_entry=root, admin_entry2=root, root2=None):
                     sql = "select UserId FROM Users"
                     mycursor.execute(sql)
                     for i in mycursor:
-                        listBox.insert("end", i)
+                        entry2.insert("end", i)
                         mycursor.execute("SELECT Username FROM Users")
                         name = mycursor.fetchone()
 
                     for i in name:
-                        listBox3.insert(END, i)
+                        entry3.insert(END, i)
                         mycursor.execute("SELECT Password FROM Users")
                         pass1 = mycursor.fetchone()
 
                     for i in pass1:
-                        listBox4.insert(END, i)
+                        entry4.insert(END, i)
                         mycursor.execute("SELECT Login_time FROM Users")
                         time = mycursor.fetchone()
 
                     for i in time:
-                        listBox5.insert(END, i)
+                        entry5.insert(END, i)
                         mycursor.execute("SELECT Logout_time FROM Users")
                         time2 = mycursor.fetchall()
 
                     for i in time2:
-                        listbox6.insert(END, i)
+                        entry6.insert(END, i)
 
                         update_button = Button(root, text="Update list", command=lambda: populatebox())
                         update_button.place(x=450, y=400)
@@ -230,6 +230,7 @@ def entry(admin_entry=root, admin_entry2=root, root2=None):
                     root4 = Tk()
                     root4.title("Add User")
                     root4.geometry("500x500")
+                    root4.config(bg="black")
 
                 full_name_label = Label(root3, text="Full Name:")
                 user_name_label = Label(root3, text="Username:")
@@ -282,33 +283,36 @@ root5.title("Next Of Kin")
 root5.geometry("500x500")
 root5.config(bg="black")
 
+kin_label = Label(root5, text="Full Name")
+kin_label.pack()
 kin_name = Entry(root5)
-kin_name.config(width=15, font="Serif, 20", bg="purple")
 kin_name.pack()
+kin_label1 = Label(root5, text="Contact Details")
+kin_label1.pack()
 kin_contact = Entry(root5)
-kin_contact.config(width=15, font="Serif, 20", bg="purple")
 kin_contact.pack()
 
 root6 = Tk()
 root6.title("Remove")
-root6.geometry("200x200")
+root6.geometry("400x400")
+root6.config(bg="black")
 
-name = Label(root5, text="Full Name:")
+name = Label(root6, text="Full Name:")
 name.pack()
 
-full_name = Entry(root5)
-full_name.pack()
+name = Entry(root6)
+name.pack()
 
-name_user = Label(root5, text="Username:")
+name_user = Label(root6, text="Username:")
 name_user.pack()
 
-user_name = Entry(root5)
+user_name = Entry(root6)
 user_name.pack()
 
-password_label = Label(root5, text="Password:")
+password_label = Label(root6, text="Password:")
 password_label.pack()
 
-password = Entry(root5)
+password = Entry(root6)
 password.pack()
 
 
@@ -316,7 +320,6 @@ def delete():
     sql = "DELETE from Users where Fullname = %s"
     messagebox.showinfo("DELETED", "Delete was a success")
     root6.destroy()
-
 
 delete_button = Button(root, text="Delete User", width=20, command=delete)
 delete_button.pack()
@@ -326,30 +329,31 @@ admin_button.pack()
 
 register_button = Button(root, text="Register Here", width=20, command=register)
 register_button.pack()
-userid_list = Label(root, text="UserId")
-userid_list.pack()
-listBox = Listbox(root, width=20)
-listBox.pack()
 
-username_list = Label(root, text="Username")
-username_list.pack()
-listBox3 = Listbox(root, width=20)
-listBox3.pack()
+userid_label = Label(root, text="User-Id")
+userid_label.pack()
+entry2 = Entry(root, width=20)
+entry2.pack()
 
-password_list = Label(root, text="Password")
-password_list.pack()
-listBox4 = Listbox(root, width=20)
-listBox4.pack()
+username_label = Label(root, text="Username")
+username_label.pack()
+entry3 = Entry(root, width=20)
+entry3.pack()
 
-login_list = Label(root, text="Login")
-login_list.pack()
-listBox5 = Listbox(root, width=20)
-listBox5.pack()
+password_label = Label(root, text="Password")
+password_label.pack()
+entry4 = Entry(root, width=20)
+entry4.pack()
 
-logout_list = Label(root, text="Logout")
-logout_list.pack()
-listbox6 = Listbox(root, width=20)
-listbox6.pack()
+login_label = Label(root, text="Login")
+login_label.pack()
+entry5 = Entry(root, width=20)
+entry5.pack()
+
+logout_label = Label(root, text="Logout")
+logout_label.pack()
+entry6 = Entry(root, width=20)
+entry6.pack()
 
 
 def populatebox():
@@ -359,31 +363,31 @@ def populatebox():
     sql = "select UserId FROM Users"
     mycursor.execute(sql)
     for i in mycursor:
-        listBox.insert("end", i)
+        entry2.insert("end", i)
 
     mycursor.execute("SELECT Username FROM Users")
     name = mycursor.fetchall()
 
     for i in name:
-        listBox3.insert(END, i)
+        entry3.insert(END, i)
 
     mycursor.execute("SELECT Password FROM Users")
     pass1 = mycursor.fetchall()
 
     for i in pass1:
-        listBox4.insert(END, i)
+        entry4.insert(END, i)
 
     mycursor.execute("SELECT Login_time FROM Users")
     time = mycursor.fetchall()
 
     for i in time:
-        listBox5.insert(END, i)
+        entry5.insert(END, i)
 
     mycursor.execute("SELECT Logout_time FROM Users")
     time2 = mycursor.fetchall()
 
     for i in time2:
-        listbox6.insert(END, i)
+        entry6.insert(END, i)
 
 
 update_button = Button(root, text="Update list", command=lambda: populatebox())
